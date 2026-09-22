@@ -309,9 +309,17 @@
             </li>
         </ul>
 
-        <div class="user-profile-sidebar">
-            <div class="avatar">
-                {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+            <div class="user-profile-sidebar">
+                <div style="width: 32px; height: 32px; border-radius: 50%; overflow: hidden; border: 1px solid var(--border); background: #e2e8f0;">
+                @if(Auth::user()->profile_photo_path)
+                    <img src="{{ asset('storage/' . Auth::user()->profile_photo_path) }}"
+                        alt="Foto Profil"
+                        style="width:100%; height:100%; object-fit:cover; display:block;">
+                @else
+                    <span style="font-size: 0.7rem; font-weight: 700; color: var(--primary);">
+                        {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                    </span>
+                @endif
             </div>
             <div>
                 <div style="font-weight: 600; font-size: 0.85rem; color: var(--text-title);" id="profileName">
@@ -322,6 +330,11 @@
                 </div>
             </div>
         </div>
+        <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('profile') ? 'active' : '' }}" href="{{ route('profile') }}">
+                <i class="fa-solid fa-user"></i> Profil
+            </a>
+        </li>
     </aside>
 
         <!-- Main Content -->
@@ -349,16 +362,6 @@
                 @endguest
 
                 @auth
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <div style="text-align: right;">
-                            <div style="font-weight: 700; font-size: 0.82rem; color: var(--text-title);">
-                                {{ Auth::user()->name }}
-                            </div>
-                            <div style="font-size: 0.72rem; color: var(--text-muted);">
-                                {{ str_replace('_', ' ', Auth::user()->role) }}
-                            </div>
-                        </div>
-
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
                             <button type="submit" class="btn btn-outline" style="padding: 8px 12px;">
