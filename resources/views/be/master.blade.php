@@ -48,7 +48,7 @@
         }
         .brand i { color: var(--primary); font-size: 1.3rem; }
 
-        .nav-menu { list-style: none; padding: 0 12px; flex: 1; }
+        .nav-menu { list-style: none; padding: 0 12px; flex: 1; display: flex; flex-direction: column; }
         .nav-item { margin-bottom: 4px; }
         .nav-link {
             display: flex;
@@ -65,6 +65,28 @@
         .nav-link:hover { background: var(--bg-main); color: var(--text-title); }
         .nav-link.active { background: var(--primary); color: #ffffff; }
 
+        .sidebar-footer {
+            margin-top: auto;
+            border-top: 1px solid var(--border);
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        .sidebar-profile-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 16px;
+            color: var(--text-body);
+            text-decoration: none;
+            font-weight: 500;
+            transition: 0.2s ease;
+        }
+
+        .sidebar-profile-link:hover {
+            background: var(--bg-main);
+            color: var(--text-title);
+        }
+
         .sidebar-card {
             margin: 16px;
             padding: 16px;
@@ -77,12 +99,40 @@
 
         .user-profile-sidebar {
             padding: 16px;
-            border-top: 1px solid var(--border);
             display: flex;
             align-items: center;
             gap: 10px;
         }
-        .avatar { width: 36px; height: 36px; border-radius: 50%; background: #e2e8f0; display: flex; align-items: center; justify-content: center; font-weight: 600; color: var(--primary); }
+        .avatar { width: 36px; height: 36px; border-radius: 50%; background: #e2e8f0; display: flex; align-items: center; justify-content: center; font-weight: 600; color: var(--primary); overflow: hidden; border: 1px solid var(--border); }
+        .avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+        .sidebar-logout {
+            padding: 0 16px 16px;
+        }
+        .sidebar-logout .btn {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .mobile-menu-toggle {
+            display: none;
+            width: 42px;
+            height: 42px;
+            border: 1px solid var(--border);
+            background: var(--bg-card);
+            border-radius: 10px;
+            color: var(--text-title);
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .mobile-sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.45);
+            z-index: 90;
+        }
 
         /* --- MAIN AREA --- */
         main { margin-left: var(--sidebar-width); flex: 1; display: flex; flex-direction: column; min-width: 0; }
@@ -197,6 +247,147 @@
         .page-view { display: none; }
         .page-view.active { display: block; }
 
+        @media (max-width: 1024px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .grid-2-1 {
+                grid-template-columns: 1fr;
+            }
+
+            .search-bar {
+                width: 220px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                display: block;
+            }
+
+            .mobile-menu-toggle {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            aside {
+                position: fixed;
+                left: 0;
+                top: 0;
+                width: min(82vw, 280px);
+                height: 100vh;
+                transform: translateX(-110%);
+                transition: transform 0.25s ease;
+                box-shadow: 0 20px 45px rgba(15, 23, 42, 0.22);
+                z-index: 110;
+            }
+
+            body.sidebar-open aside {
+                transform: translateX(0);
+            }
+
+            body.sidebar-open .mobile-sidebar-overlay {
+                display: block;
+            }
+
+            main {
+                margin-left: 0;
+                width: 100%;
+            }
+
+            header {
+                height: auto;
+                padding: 14px 16px;
+                flex-wrap: wrap;
+                gap: 12px;
+            }
+
+            .header-left {
+                width: 100%;
+            }
+
+            .header-left h2 {
+                font-size: 1.05rem;
+            }
+
+            .header-left p {
+                font-size: 0.75rem;
+            }
+
+            .header-actions {
+                width: 100%;
+                justify-content: space-between;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .search-bar {
+                width: 100%;
+                order: 3;
+            }
+
+            .nav-menu {
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+                padding: 12px;
+            }
+
+            .nav-item {
+                width: 100%;
+                margin-bottom: 0;
+            }
+
+            .nav-link {
+                width: 100%;
+                justify-content: flex-start;
+            }
+
+            .content {
+                padding: 16px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .locker-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .header-actions > div {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .user-profile-sidebar {
+                padding: 12px 16px;
+            }
+
+            .brand {
+                padding: 16px 20px;
+            }
+
+            .panel,
+            .stat-card {
+                padding: 14px;
+            }
+        }
+
         /* --- MODAL POPUP STYLES --- */
         .modal-overlay {
             position: fixed;
@@ -256,6 +447,7 @@
     </style>
 </head>
 <body>
+    <div class="mobile-sidebar-overlay" id="mobileSidebarOverlay"></div>
 
 <!-- sidebar -->
     <!-- Sidebar -->
@@ -309,37 +501,48 @@
             </li>
         </ul>
 
+        <div class="sidebar-footer">
             <div class="user-profile-sidebar">
-                <div style="width: 32px; height: 32px; border-radius: 50%; overflow: hidden; border: 1px solid var(--border); background: #e2e8f0;">
-                @if(Auth::user()->profile_photo_path)
-                    <img src="{{ asset('storage/' . Auth::user()->profile_photo_path) }}"
-                        alt="Foto Profil"
-                        style="width:100%; height:100%; object-fit:cover; display:block;">
-                @else
-                    <span style="font-size: 0.7rem; font-weight: 700; color: var(--primary);">
-                        {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
-                    </span>
-                @endif
+                <div class="avatar" style="width: 32px; height: 32px;">
+                    @if(Auth::user()->profile_photo_path)
+                        <img src="{{ asset('storage/' . Auth::user()->profile_photo_path) }}" alt="Foto Profil">
+                    @else
+                        <span style="font-size: 0.7rem; font-weight: 700; color: var(--primary);">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</span>
+                    @endif
+                </div>
+                <div>
+                    <div style="font-weight: 600; font-size: 0.85rem; color: var(--text-title);" id="profileName">
+                        {{ Auth::user()->name }}
+                    </div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted);" id="profileRole">
+                        {{ str_replace('_', ' ', Auth::user()->role) }}
+                    </div>
+                </div>
             </div>
-            <div>
-                <div style="font-weight: 600; font-size: 0.85rem; color: var(--text-title);" id="profileName">
-                    {{ Auth::user()->name }}
-                </div>
-                <div style="font-size: 0.75rem; color: var(--text-muted);" id="profileRole">
-                    {{ str_replace('_', ' ', Auth::user()->role) }}
-                </div>
+
+            <a class="sidebar-profile-link {{ request()->routeIs('profile') ? 'active' : '' }}" href="{{ route('profile') }}">
+                <i class="fa-solid fa-user"></i>
+                <span>Profil</span>
+            </a>
+
+            <div class="sidebar-logout">
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="btn btn-outline" style="padding: 8px 12px;">
+                        <i class="fa-solid fa-right-from-bracket"></i> Logout
+                    </button>
+                </form>
             </div>
         </div>
-        <li class="nav-item">
-            <a class="nav-link {{ request()->routeIs('profile') ? 'active' : '' }}" href="{{ route('profile') }}">
-                <i class="fa-solid fa-user"></i> Profil
-            </a>
-        </li>
     </aside>
 
         <!-- Main Content -->
     <main>
         <header>
+            <button type="button" class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Buka menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+
             <div class="header-left">
                 <h2 id="pageTitle">{{ $title }}</h2>
                 <p id="pageSub">Kelola dan pantau seluruh pergerakan barang & locker Karlink</p>
@@ -360,16 +563,6 @@
                         <i class="fa-solid fa-user-plus"></i> Register
                     </a>
                 @endguest
-
-                @auth
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-                            <button type="submit" class="btn btn-outline" style="padding: 8px 12px;">
-                                <i class="fa-solid fa-right-from-bracket"></i> Logout
-                            </button>
-                        </form>
-                    </div>
-                @endauth
             </div>
             
         </header>
@@ -416,6 +609,21 @@
 
     <!-- JS Logic -->
     <script>
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const mobileSidebarOverlay = document.getElementById('mobileSidebarOverlay');
+
+        if (mobileMenuToggle) {
+            mobileMenuToggle.addEventListener('click', function () {
+                document.body.classList.toggle('sidebar-open');
+            });
+        }
+
+        if (mobileSidebarOverlay) {
+            mobileSidebarOverlay.addEventListener('click', function () {
+                document.body.classList.remove('sidebar-open');
+            });
+        }
+
         // Modal Control Functions
         function openModal(modalId) {
             document.getElementById(modalId).classList.add('show');
