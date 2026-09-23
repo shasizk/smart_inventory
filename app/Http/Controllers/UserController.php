@@ -10,9 +10,90 @@ use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
+    private function roleLabels(): array
+    {
+        return [
+            'super_admin' => 'Super Admin',
+            'admin' => 'Admin',
+            'teknisi' => 'Teknisi',
+            'noc' => 'NOC',
+        ];
+    }
+
+    private function roleClasses(): array
+    {
+        return [
+            'super_admin' => 'pill-purple',
+            'admin' => 'pill-blue',
+            'teknisi' => 'pill-green',
+            'noc' => 'pill-amber',
+        ];
+    }
+
     public function index()
     {
-        return view('users.index', ['title' => 'User Manager']);
+        $users = User::latest()->get();
+
+        return view('users.index', [
+            'title' => 'User Manager',
+            'users' => $users,
+            'roleLabels' => $this->roleLabels(),
+            'roleClasses' => $this->roleClasses(),
+        ]);
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'unique:users,email'],
+            'role' => ['required', 'in:super_admin,admin,teknisi,noc'],
+            'password' => ['required', 'string', 'min:8'],
+        ]);
+
+        User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'role' => $request->role,
+            'password' => Hash::make($request->password),
+        ]);
+
+        return redirect()->route('users.index')->with('success', 'User berhasil ditambahkan.');
+    }
+
+    public function update(Request $request, User $user)
+    {
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'unique:users,email,' . $user->id],
+            'role' => ['required', 'in:super_admin,admin,teknisi,noc'],
+            'password' => ['nullable', 'string', 'min:8'],
+        ]);
+
+        $data = [
+            'name' => $request->name,
+            'email' => $request->email,
+            'role' => $request->role,
+        ];
+
+        if ($request->filled('password')) {
+            $data['password'] = Hash::make($request->password);
+        }
+
+        $user->update($data);
+
+        return redirect()->route('users.index')->with('success', 'User berhasil diperbarui.');
+    }
+
+    public function destroy(User $user)
+    {
+        if (Auth::id() === $user->id) {
+            return redirect()->route('users.index')->with('error', 'Anda tidak bisa menghapus user yang sedang login.');
+        }
+
+        $user->delete();
+
+        return redirect()->route('users.index')->with('success', 'User berhasil dihapus.');
     }
 
     public function profile()

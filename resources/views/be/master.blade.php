@@ -444,6 +444,67 @@
             background: #fff;
         }
         .form-control:focus { border-color: var(--primary); }
+
+        .pill {
+        padding: 4px 8px;
+        border-radius: 6px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        display: inline-block;
+        }
+
+        .pill-blue   { background: #dbeafe; color: #1e40af; }
+        .pill-green  { background: #d1fae5; color: #065f46; }
+        .pill-amber  { background: #fef3c7; color: #92400e; }
+        .pill-red    { background: #fee2e2; color: #991b1b; }
+        .pill-purple { background: #ede9fe; color: #5b21b6; }
+
+                /* Styling Sub-Menu Sidebar */
+        .sub-menu {
+            list-style: none;
+            padding-left: 36px;
+            display: none; /* Sembunyi secara default */
+            flex-direction: column;
+            gap: 4px;
+            margin-top: 4px;
+        }
+
+        .sub-menu.open {
+            display: flex; /* Tampil jika class 'open' aktif */
+        }
+
+        .sub-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            color: var(--text-body);
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        .sub-link:hover {
+            background: var(--bg-main);
+            color: var(--text-title);
+        }
+
+        .sub-link.active {
+            color: var(--primary);
+            font-weight: 600;
+            background: var(--primary-light);
+        }
+
+        .submenu-arrow {
+            font-size: 0.75rem;
+            transition: transform 0.2s;
+        }
+
+        .sub-menu.open + .submenu-arrow,
+        .nav-link.active .submenu-arrow {
+            transform: rotate(180deg);
+        }
     </style>
 </head>
 <body>
@@ -463,18 +524,32 @@
                 Overview
                 </a>
             </li>
-            <li class="nav-item ">
-                <a class="nav-link @if ($title === 'Barang & Supplier') active @endif" href="{{ route('basup.index') }}">
-                    <i class="fa-solid fa-box-archive"></i> 
-                    Barang & Supplier
-                </a>
-            </li>
-            <li class="nav-item ">
-                <a class="nav-link @if ($title === 'Barang Masuk') active @endif" href="{{ route('barang-masuk.index') }}">
-                    <i class="fa-solid fa-truck-ramp-box"></i> 
-                    Barang Masuk
-                </a>
-            </li>
+        <!-- Menu Parent dengan Dropdown Sub-menu -->
+        <li class="nav-item">
+            <a class="nav-link @if (in_array($title, ['Barang & Supplier', 'Kategori Barang', 'Barang Masuk'])) active @endif" 
+            onclick="toggleSubmenu(event)" 
+            style="justify-content: space-between; cursor: pointer;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <i class="fa-solid fa-box-archive"></i>
+                    <span>Barang</span>
+                </div>
+                <i class="fa-solid fa-chevron-down submenu-arrow" id="arrowBarang"></i>
+            </a>
+
+            <!-- Sub-menu Items -->
+            <ul class="sub-menu @if (in_array($title, ['Barang & Supplier', 'Kategori Barang', 'Barang Masuk'])) open @endif" id="submenuBarang">
+                <li>
+                    <a class="sub-link @if ($title === 'Kategori Barang') active @endif" href="{{ route('kategori.index') }}">
+                        <i class="fa-solid fa-tags"></i> Kategori Barang
+                    </a>
+                </li>
+                <li>
+                    <a class="sub-link @if ($title === 'Barang Masuk') active @endif" href="{{ route('barang-masuk.index') }}">
+                        <i class="fa-solid fa-boxes-packing"></i> Data Barang
+                    </a>
+                </li>
+            </ul>
+        </li>
             <li class="nav-item">
                 <a class="nav-link @if ($title === 'Peminjaman & Pinjam') active @endif" href="{{ route('peminjaman.index') }}">
                     <i class="fa-solid fa-file-signature"></i> 
@@ -574,7 +649,7 @@
                 @yield('dashboard')
             @endif
             <!-- PAGE 2: MASTER DATA -->
-            @if ($title === 'Barang & Supplier')
+            @if (in_array($title, ['Barang & Supplier', 'Kategori Barang', 'Barang Masuk']))
                 @yield('basup')
             @endif
 
@@ -823,6 +898,20 @@
         function approveRequest(btn, ref) {
             btn.parentElement.innerHTML = '<span class="pill pill-green">Approved</span>';
             alert(`Pengajuan ${ref} telah disetujui (Approved) oleh Admin!`);
+        }
+
+        function toggleSubmenu(event) {
+            event.preventDefault();
+            const submenu = document.getElementById('submenuBarang');
+            const arrow = document.getElementById('arrowBarang');
+            
+            submenu.classList.toggle('open');
+            
+            if (submenu.classList.contains('open')) {
+                arrow.style.transform = 'rotate(180deg)';
+            } else {
+                arrow.style.transform = 'rotate(0deg)';
+            }
         }
     </script>
 </body>
